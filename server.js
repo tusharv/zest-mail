@@ -8,16 +8,10 @@ const app = express();
 const sgMail = require("@sendgrid/mail");
 const axios = require('axios');
 
-
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-// we've started you off with Express,
-// but feel free to use whatever libs or frameworks you'd like through `package.json`.
-
-// http://expressjs.com/en/starter/static-files.html
 app.use(express.static("public"));
 
-// http://expressjs.com/en/starter/basic-routing.html
 app.get("/", function(request, response) {
   response.sendFile(__dirname + "/views/index.html");
 });
@@ -32,13 +26,14 @@ app.get("/mail", function(request, response) {
   };
   sgMail.send(msg);
   
-  response.send("Sent Mail Successfully to " + request.param("email"));
+  response.send("Sent Mail Successfully to " + request.param("receiver-email"));
 });
 
 
-app.get("/image", function(request, response) {
-  
-  let url = 'https://api.unsplash.com/photos/random?client_id=' + process.env.UNSPLASH_API_KEY + '&query=Top rated';
+app.get("/image/:category?", function(request, response) {
+  let category = (request.params.category) ? request.query.category : "Top Rated";
+  let url = 'https://api.unsplash.com/photos/random?client_id=' + process.env.UNSPLASH_API_KEY + '&query=' + category;
+
   axios.get(url)
     .then(function (res) {
       if (res.data) {
@@ -50,14 +45,12 @@ app.get("/image", function(request, response) {
           name: data.user.name,
           link: data.user.links.html,
           timestamp: new Date()/1000
-        };
-        //response.json(o);
-        // response.set({
-        //   'Content-Type':'image/png',
-        //   'Cache-Control':'no-cache, max-age=0'
-        // });
-        response.redirect(302, o.image);
-        
+        }; 
+        response.set({
+          'Content-Type':'image/png',
+          'Cache-Control':'no-cache, max-age=0'
+        });
+        response.redirect(302,o.image);
       }
     });
 });
