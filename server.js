@@ -16,7 +16,7 @@ app.get("/", function(request, response) {
   response.sendFile(__dirname + "/views/index.html");
 });
 
-app.get("/mail", function(request, response) {
+app.get("/mail", function (request, response) {
   const msg = {
     to: request.param("receiver-email"),
     from: request.param("sender-email"),
@@ -29,6 +29,17 @@ app.get("/mail", function(request, response) {
   response.send("Sent Mail Successfully to " + request.param("receiver-email"));
 });
 
+app.get("/ip", function(request, response) {
+  if(request.headers['x-forwarded-for']) {
+    return response.json({ip:request.headers['x-forwarded-for'], type: "header"});
+  } else if (request.connection && request.connection.remoteAddress) {
+    return response.json({ip: request.connection.remoteAddress, type: "connection-remote-address"});
+  } else if (request.socket && request.socket.remoteAddress) {
+    return response.json({ip:request.socket.remoteAddress, type: "socket-remote-address"});
+  } else {
+    return response.json({error: "Unable to detect IP Address"});
+  }
+});
 
 app.get("/image/:category?", function(request, response) {
   let category = (request.params.category) ? request.query.category : "Top Rated";
