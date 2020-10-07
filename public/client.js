@@ -7,12 +7,12 @@ const mailMessage = document.querySelector('textarea[name="message"]');
 const mailPreview = document.querySelector('#preview');
 
 
-mailMessage.onkeyup = function(event){
+mailMessage.onkeyup = function(event) {
   mailPreview.contentDocument.write(mailMessage.value);
   mailPreview.contentDocument.close();
-}
+};
 
 // listen for the form to be submitted and add a new dream when it is
 mailForm.onsubmit = function(event) {
-  
+
 };
