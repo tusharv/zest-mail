@@ -24,8 +24,8 @@ app.get("/", function(request, response) {
 
 app.get("/mail", function(request, response) {
   const msg = {
-    to: request.param("email"),
-    from: process.env.SENDER_MAIL,
+    to: request.param("receiver-email"),
+    from: request.param("sender-email"),
     subject: request.param("subject"),
     text: request.param("message"),
     html: request.param("message")

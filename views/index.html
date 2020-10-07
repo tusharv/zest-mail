@@ -3,7 +3,7 @@
   <head>
     <title>Send Grid Mail Sender</title>
     <meta name="description" content="A Mail Sender using SendGrid">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <link rel="shortcut icon" type="image/x-icon" href="https://www.herokucdn.com/favicons/favicon.ico"/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,9 +24,12 @@
       
       <div class="split">
         <form action="/mail" method="GET">
-          <input name="email" type="text" maxlength="100" placeholder="Enter recipient email address">
+          <input name="receiver-email" type="text" maxlength="100" placeholder="Enter recipient email address">
+          <input name="sender-email" type="hidden" maxlength="100" placeholder="Enter Sender email address" value="test6@gmail.com">
           <input name="subject" type="text" maxlength="100" placeholder="Enter subject">
-          <textarea name="message" rows="10"></textarea>
+          <textarea name="message" rows="10">
+
+          </textarea>
           <br>
           <button type="submit" id="submit-mail">Send!</button>
         </form>
