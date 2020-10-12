@@ -11,6 +11,8 @@ const ipInfo = require('./utils/ip-info');
 const forecast = require('./utils/forecast');
 const fs = require('fs');
 const text2png = require('text2png');
+const userIP = require('./utils/getip');
+const saveImage = require('./utils/saveImage');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -131,8 +133,32 @@ app.get('/image/:category?', function(request, response) {
       });
 });
 
-app.get('/magic/', function(request, response) {
-  response.send('Waiting for magic');
+app.get('/zest/:key?', function(request, response) {
+  const {key} = request.params;
+  const ipAddress = userIP(request);
+
+  ipInfo(ipAddress.ip, (data) => {
+    console.log(data.city);
+    switch (key) {
+      case 'location':
+        return response.sendFile(saveImage(data.city));
+        break;
+      case 'weather':
+        forecast(data.city, (error, forecastData) => {
+          if (error) {
+            return response.send({
+              error,
+              type: 'forecast',
+            });
+          }
+          return response.sendFile(saveImage(forecastData.description));
+        });
+        break;
+      default:
+        return response.send('Something Random');
+        break;
+    }
+  });
 });
 
 // listen for requests :)
