@@ -93,7 +93,7 @@ app.get('/weather/:address?', (req, res) => {
 
 app.get('/text/:text?', function(request, response) {
   const {text = 'Hello World'} = request.params;
-  const fileName = __dirname + '\\public\\images\\' + text + '.png';
+  const fileName = __dirname + '/public/images/' + text + '.png';
 
   fs.writeFileSync(fileName, text2png(text,
       {
