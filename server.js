@@ -7,6 +7,7 @@ const express = require('express');
 const app = express();
 const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
+const ipInfo = require('./utils/ip-info');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -27,6 +28,13 @@ app.get('/mail', function(request, response) {
   sgMail.send(msg);
 
   response.send('Sent Mail Successfully to ' + request.param('receiver-email'));
+});
+
+app.get('/ipinfo/:ip?', function(request, response) {
+  const {ip = ''} = request.params;
+  ipInfo(ip, (data)=>{
+    response.json(data);
+  });
 });
 
 app.get('/ip', function(request, response) {
