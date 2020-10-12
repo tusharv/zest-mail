@@ -9,6 +9,8 @@ const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
 const ipInfo = require('./utils/ip-info');
 const forecast = require('./utils/forecast');
+const fs = require('fs');
+const text2png = require('text2png');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -33,7 +35,7 @@ app.get('/mail', function(request, response) {
 
 app.get('/ipinfo/:ip?', function(request, response) {
   const {ip = ''} = request.params;
-  ipInfo(ip, (data)=>{
+  ipInfo(ip, (data) => {
     response.json(data);
   });
 });
@@ -59,39 +61,55 @@ app.get('/ip', function(request, response) {
   }
 });
 
-app.get('/weather/:address?', (req, res)=>{
+app.get('/weather/:address?', (req, res) => {
   console.log('In weather with ', req.query.address);
 
-  if(!req.query.address){
-      return res.send({
-          error: 'Address param is missing'
-      })
+  if (!req.query.address) {
+    return res.send({
+      error: 'Address param is missing',
+    });
   }
 
-  forecast(req.query.address, (error, forecastData)=>{
-    if(error) {
+  forecast(req.query.address, (error, forecastData) => {
+    if (error) {
       return res.send({
-          error,
-          type: 'forecast'
+        error,
+        type: 'forecast',
       });
     }
-    console.log(`${forecastData.description}. It's currently ${forecastData.temprature}°. It feels like ${forecastData.feelslike}°.`);
-
+    console.log(`${forecastData.description}. 
+              It's currently ${forecastData.temprature}°. 
+              It feels like ${forecastData.feelslike}°.`);
     res.send({
       address: req.query.address,
       temprature: forecastData.temprature,
       feelslike: forecastData.feelslike,
       description: forecastData.description,
       icon: forecastData.icon,
-      time: forecastData.time
-      });
+      time: forecastData.time,
+    });
   });
+});
+
+app.get('/text/:text', function(request, response) {
+  const {text = 'Hello World'} = request.params;
+  const fileName = __dirname + '\\public\\images\\' + text + '.png';
+
+  fs.writeFileSync(fileName, text2png(text,
+      {
+        color: 'teal',
+        backgroundColor: 'linen',
+        lineSpacing: 10,
+        padding: 20,
+      }));
+
+  response.sendFile(fileName);
 });
 
 app.get('/image/:category?', function(request, response) {
   const {category = 'Top Rated'} = request.params;
   const url = 'https://api.unsplash.com/photos/random?client_id=' + process.env.UNSPLASH_API_KEY + '&query=' + category;
-
+  console.log(url);
   axios.get(url)
       .then(function(res) {
         if (res.data) {
@@ -108,9 +126,14 @@ app.get('/image/:category?', function(request, response) {
             'Content-Type': 'image/png',
             'Cache-Control': 'no-cache, max-age=0',
           });
-          response.redirect(302, o.image);
+          // response.redirect(302, o.image);
+          response.redirect(o.image);
         }
       });
+});
+
+app.get('/magic/', function(request, response) {
+  response.send('Waiting for magic');
 });
 
 // listen for requests :)
