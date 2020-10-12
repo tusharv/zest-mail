@@ -1,8 +1,8 @@
 require('dotenv').config();
 const request = require('request');
 const WEATHERSTACK_API_KEY = process.env.WEATHERSTACK_API_KEY || '';
-const forecast = (latitude, longitude, callback) => {
-    const url = `http://api.weatherstack.com/current?access_key=${WEATHERSTACK_API_KEY}&query=${latitude},${longitude}`;
+const forecast = (address, callback) => {
+    const url = `http://api.weatherstack.com/current?access_key=${WEATHERSTACK_API_KEY}&query=${address}`;
 
     request({url, json:true}, (error, {body})=>{
         console.log(url);
