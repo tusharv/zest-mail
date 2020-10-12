@@ -62,26 +62,26 @@ app.get('/ip', function(request, response) {
 });
 
 app.get('/weather/:address?', (req, res) => {
-  console.log('In weather with ', req.query.address);
+  console.log('In weather with ', req.params.address);
+  const {address} = req.params;
 
-  if (!req.query.address) {
+  if (!address) {
     return res.send({
       error: 'Address param is missing',
     });
   }
 
-  forecast(req.query.address, (error, forecastData) => {
+  forecast(address, (error, forecastData) => {
     if (error) {
       return res.send({
         error,
         type: 'forecast',
       });
     }
-    console.log(`${forecastData.description}. 
-              It's currently ${forecastData.temprature}°. 
-              It feels like ${forecastData.feelslike}°.`);
     res.send({
-      address: req.query.address,
+      address: address,
+      location: forecastData.location,
+      country: forecastData.country,
       temprature: forecastData.temprature,
       feelslike: forecastData.feelslike,
       description: forecastData.description,
@@ -91,7 +91,7 @@ app.get('/weather/:address?', (req, res) => {
   });
 });
 
-app.get('/text/:text', function(request, response) {
+app.get('/text/:text?', function(request, response) {
   const {text = 'Hello World'} = request.params;
   const fileName = __dirname + '\\public\\images\\' + text + '.png';
 
@@ -102,7 +102,6 @@ app.get('/text/:text', function(request, response) {
         lineSpacing: 10,
         padding: 20,
       }));
-
   response.sendFile(fileName);
 });
 
