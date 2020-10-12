@@ -7,7 +7,7 @@ const express = require('express');
 const app = express();
 const sgMail = require('@sendgrid/mail');
 const axios = require('axios');
-const forecast = require('./utils/forecast');
+const ipInfo = require('./utils/ip-info');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -30,32 +30,10 @@ app.get('/mail', function(request, response) {
   response.send('Sent Mail Successfully to ' + request.param('receiver-email'));
 });
 
-app.get('/weather/:address?', (req, res)=>{
-  console.log('In weather with ', req.query.address);
-
-  if(!req.query.address){
-      return res.send({
-          error: 'Address param is missing'
-      })
-  }
-
-  forecast(req.query.address, (error, forecastData)=>{
-    if(error) {
-      return res.send({
-          error,
-          type: 'forecast'
-      });
-    }
-    console.log(`${forecastData.description}. It's currently ${forecastData.temprature}°. It feels like ${forecastData.feelslike}°.`);
-
-    res.send({
-      address: req.query.address,
-      temprature: forecastData.temprature,
-      feelslike: forecastData.feelslike,
-      description: forecastData.description,
-      icon: forecastData.icon,
-      time: forecastData.time
-      });
+app.get('/ipinfo/:ip?', function(request, response) {
+  const {ip = ''} = request.params;
+  ipInfo(ip, (data)=>{
+    response.json(data);
   });
 });
 
