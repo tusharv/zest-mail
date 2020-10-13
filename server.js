@@ -160,7 +160,21 @@ app.get('/zest/:key?', function(request, response) {
               type: 'forecast',
             });
           }
-          return response.sendFile(saveImage(forecastData.description));
+          return response.sendFile(
+              saveImage(
+                  forecastData.temprature + ' ' +forecastData.description,
+              ));
+        });
+        break;
+      case 'weather-icon':
+        forecast(data.city, (error, forecastData) => {
+          if (error) {
+            return response.send({
+              error,
+              type: 'forecast',
+            });
+          }
+          return response.sendFile(saveImage(forecastData.icon));
         });
         break;
       default:
