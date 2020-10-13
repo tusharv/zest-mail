@@ -174,7 +174,7 @@ app.get('/zest/:key?', function(request, response) {
               type: 'forecast',
             });
           }
-          return response.redirect(saveImage(forecastData.icon));
+          return response.redirect(forecastData.icon);
         });
         break;
       default:
