@@ -134,8 +134,8 @@ app.get('/image/:category?', function(request, response) {
       });
 });
 
-app.get('/zest/:key?', function(request, response) {
-  const {key} = request.params;
+app.get('/zest/:key?/:value?', function(request, response) {
+  const {key, value = ''} = request.params;
   const ipAddress = userIP(request);
 
   ipInfo(ipAddress.ip, (data) => {
@@ -144,13 +144,32 @@ app.get('/zest/:key?', function(request, response) {
       case 'location':
         return response.sendFile(saveImage(data.city));
         break;
+      case 'text':
+        return response.sendFile(saveImage(value));
+        break;
       case 'time':
         const now = new Date();
-        return response.sendFile(
-            saveImage(
-                dateFormat(now, 'dddd mmmm dS yyyy h:MM:ss TT'),
-            ),
-        );
+        let dateTo; let diffrence;
+
+        if (value) {
+          dateTo = new Date(value);
+          if (dateTo.toString() === 'Invalid Date') {
+            return response.sendFile(saveImage('Invalid Date'));
+          }
+          diffrence = Math.round(((dateTo - now) / 1000 ) / (60 * 60 * 24));
+          return response.sendFile(
+              saveImage( Math.abs(diffrence) + ' days ' +
+              ((diffrence > 0) ? 'remaining in ' : 'passed after ') +
+                dateFormat(dateTo, 'mmmm dS yyyy'),
+              ),
+          );
+        } else {
+          return response.sendFile(
+              saveImage(
+                  dateFormat(now, 'dddd mmmm dS yyyy h:MM:ss TT'),
+              ),
+          );
+        }
         break;
       case 'weather':
         forecast(data.city, (error, forecastData) => {
