@@ -156,9 +156,9 @@ app.get('/zest/:key?/:value?', function(request, response) {
           if (dateTo.toString() === 'Invalid Date') {
             return response.sendFile(saveImage('Invalid Date'));
           }
-          diffrence = Math.round(((dateTo - now) / 1000 ) / (60 * 60 * 24));
+          diffrence = Math.round(((dateTo - now) / 1000 ) / (1));
           return response.sendFile(
-              saveImage( Math.abs(diffrence) + ' days ' +
+              saveImage( Math.abs(diffrence) + ' seconds ' +
               ((diffrence > 0) ? 'remaining in ' : 'passed after ') +
                 dateFormat(dateTo, 'mmmm dS yyyy'),
               ),
