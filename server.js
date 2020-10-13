@@ -13,6 +13,7 @@ const fs = require('fs');
 const text2png = require('text2png');
 const userIP = require('./utils/getip');
 const saveImage = require('./utils/saveImage');
+const dateFormat = require('dateformat');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -142,6 +143,14 @@ app.get('/zest/:key?', function(request, response) {
     switch (key) {
       case 'location':
         return response.sendFile(saveImage(data.city));
+        break;
+      case 'time':
+        const now = new Date();
+        return response.sendFile(
+            saveImage(
+                dateFormat(now, 'dddd mmmm dS yyyy h:MM:ss TT'),
+            ),
+        );
         break;
       case 'weather':
         forecast(data.city, (error, forecastData) => {
