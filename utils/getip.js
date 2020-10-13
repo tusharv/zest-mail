@@ -1,4 +1,5 @@
 const userIP = (request) => {
+  console.log(request);
   if (request.headers['x-forwarded-for']) {
     return ({
       ip: request.headers['x-forwarded-for'],

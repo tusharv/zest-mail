@@ -65,7 +65,6 @@ app.get('/ip', function(request, response) {
 });
 
 app.get('/weather/:address?', (req, res) => {
-  console.log('In weather with ', req.params.address);
   const {address} = req.params;
 
   if (!address) {
@@ -111,7 +110,6 @@ app.get('/text/:text?', function(request, response) {
 app.get('/image/:category?', function(request, response) {
   const {category = 'Top Rated'} = request.params;
   const url = 'https://api.unsplash.com/photos/random?client_id=' + process.env.UNSPLASH_API_KEY + '&query=' + category;
-  console.log(url);
   axios.get(url)
       .then(function(res) {
         if (res.data) {
@@ -139,7 +137,6 @@ app.get('/zest/:key?/:value?', function(request, response) {
   const ipAddress = userIP(request);
 
   ipInfo(ipAddress.ip, (data) => {
-    console.log(data.city);
     switch (key) {
       case 'location':
         return response.sendFile(saveImage(data.city));
@@ -172,7 +169,7 @@ app.get('/zest/:key?/:value?', function(request, response) {
         }
         break;
       case 'weather':
-        forecast(data.city, (error, forecastData) => {
+        forecast((value) ? value : data.city, (error, forecastData) => {
           if (error) {
             return response.send({
               error,
@@ -186,7 +183,7 @@ app.get('/zest/:key?/:value?', function(request, response) {
         });
         break;
       case 'weather-icon':
-        forecast(data.city, (error, forecastData) => {
+        forecast((value) ? value : data.city, (error, forecastData) => {
           if (error) {
             return response.send({
               error,
