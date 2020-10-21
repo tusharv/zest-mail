@@ -200,6 +200,10 @@ app.get('/zest/:key?/:value?', function(request, response) {
   });
 });
 
+app.get('*', (request, response)=>{
+  response.sendFile(__dirname + '/views/404.html');
+});
+
 // listen for requests :)
 const listener = app.listen(process.env.PORT, function() {
   console.log('Your app is listening on port ' + listener.address().port);
