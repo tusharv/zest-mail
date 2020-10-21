@@ -200,7 +200,7 @@ app.get('/zest/:key?/:value?', function(request, response) {
             error: 'User id is missing',
           });
         }
-        return response.sendFile(saveImage(userData(value)));
+        return response.sendFile(saveImage(userData(value), 'mail'));
         break;
       default:
         return response.send('Something Random');
