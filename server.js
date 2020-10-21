@@ -12,6 +12,7 @@ const forecast = require('./utils/forecast');
 const fs = require('fs');
 const text2png = require('text2png');
 const userIP = require('./utils/getip');
+const userData = require('./utils/getUserData');
 const saveImage = require('./utils/saveImage');
 const dateFormat = require('dateformat');
 
@@ -192,6 +193,14 @@ app.get('/zest/:key?/:value?', function(request, response) {
           }
           return response.redirect(forecastData.icon);
         });
+        break;
+      case 'user':
+        if (!value) {
+          return response.json({
+            error: 'User id is missing',
+          });
+        }
+        return response.sendFile(saveImage(userData(value)));
         break;
       default:
         return response.send('Something Random');
